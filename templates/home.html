@@ -1,0 +1,568 @@
+{% load static %}
+{% csrf_token %}
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="utf-8">
+    <title>bs4 forum - Bootdey.com</title>
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <script src="https://code.jquery.com/jquery-1.10.2.min.js"></script>
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@4.4.1/dist/css/bootstrap.min.css" rel="stylesheet">
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@4.4.1/dist/js/bootstrap.bundle.min.js"></script>
+    <link href="{% static 'fontawesomefree/css/all.min.css' %}" rel="stylesheet" type="text/css">
+    <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.6.0/jquery.min.js"></script>
+</head>
+<body>
+<style type="text/css">
+    body {
+        margin-top: 20px;
+        color: #1a202c;
+        text-align: left;
+        background-color: #e2e8f0;
+    }
+
+    .inner-wrapper {
+        position: relative;
+        height: calc(100vh - 3.5rem);
+        transition: transform 0.3s;
+    }
+
+    @media (min-width: 992px) {
+        .sticky-navbar .inner-wrapper {
+            height: calc(100vh - 3.5rem - 48px);
+        }
+    }
+
+    .inner-main,
+    .inner-sidebar {
+        position: absolute;
+        top: 0;
+        bottom: 0;
+        display: flex;
+        flex-direction: column;
+    }
+
+    .inner-sidebar {
+        left: 0;
+        width: 235px;
+        border-right: 1px solid #cbd5e0;
+        background-color: #fff;
+        z-index: 1;
+    }
+
+    .inner-main {
+        right: 0;
+        left: 235px;
+    }
+
+    .inner-main-footer,
+    .inner-main-header,
+    .inner-sidebar-footer,
+    .inner-sidebar-header {
+        height: 3.5rem;
+        border-bottom: 1px solid #cbd5e0;
+        display: flex;
+        align-items: center;
+        padding: 0 1rem;
+        flex-shrink: 0;
+    }
+
+    .inner-main-body,
+    .inner-sidebar-body {
+        padding: 1rem;
+        overflow-y: auto;
+        position: relative;
+        flex: 1 1 auto;
+    }
+
+    .inner-main-body .sticky-top,
+    .inner-sidebar-body .sticky-top {
+        z-index: 999;
+    }
+
+    .inner-main-footer,
+    .inner-main-header {
+        background-color: #fff;
+    }
+
+    .inner-main-footer,
+    .inner-sidebar-footer {
+        border-top: 1px solid #cbd5e0;
+        border-bottom: 0;
+        height: auto;
+        min-height: 3.5rem;
+    }
+
+    @media (max-width: 767.98px) {
+        .inner-sidebar {
+            left: -235px;
+        }
+
+        .inner-main {
+            left: 0;
+        }
+
+        .inner-expand .main-body {
+            overflow: hidden;
+        }
+
+        .inner-expand .inner-wrapper {
+            transform: translate3d(235px, 0, 0);
+        }
+    }
+
+    .nav .show > .nav-link.nav-link-faded, .nav-link.nav-link-faded.active, .nav-link.nav-link-faded:active, .nav-pills .nav-link.nav-link-faded.active, .navbar-nav .show > .nav-link.nav-link-faded {
+        color: #3367b5;
+        background-color: #c9d8f0;
+    }
+
+    .nav-pills .nav-link.active, .nav-pills .show > .nav-link {
+        color: #fff;
+        background-color: #467bcb;
+    }
+
+    .nav-link.has-icon {
+        display: flex;
+        align-items: center;
+    }
+
+    .nav-link.active {
+        color: #467bcb;
+    }
+
+    .nav-pills .nav-link {
+        border-radius: .25rem;
+    }
+
+    .nav-link {
+        color: #4a5568;
+    }
+
+    .card {
+        box-shadow: 0 1px 3px 0 rgba(0, 0, 0, .1), 0 1px 2px 0 rgba(0, 0, 0, .06);
+    }
+
+    .card {
+        position: relative;
+        display: flex;
+        flex-direction: column;
+        min-width: 0;
+        word-wrap: break-word;
+        background-color: #fff;
+        background-clip: border-box;
+        border: 0 solid rgba(0, 0, 0, .125);
+        border-radius: .25rem;
+    }
+
+    .card-body {
+        flex: 1 1 auto;
+        min-height: 1px;
+        padding: 1rem;
+    }
+</style>
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.12.0-2/css/all.min.css"
+      integrity="sha256-46r060N2LrChLLb5zowXQ72/iKKNiw/lAmygmHExk/o=" crossorigin="anonymous"/>
+<div class="container">
+    <div class="main-body p-0">
+        {% include 'header.html' %}
+        <br>
+        <br>
+        {% if request.user.is_authenticated %}
+            <div class="inner-wrapper">
+
+                <!-- Inner sidebar -->
+                <div class="inner-sidebar">
+                    <!-- Inner sidebar header -->
+
+                    <!-- Inner sidebar body -->
+                    <div class="inner-sidebar-body p-0">
+                        <div class="p-3 h-100" data-simplebar="init">
+                            <div class="simplebar-wrapper" style="margin: -16px;">
+                                <div class="simplebar-height-auto-observer-wrapper">
+                                    <div class="simplebar-height-auto-observer"></div>
+                                </div>
+                                <div class="simplebar-mask">
+                                    <div class="simplebar-offset" style="right: 0px; bottom: 0px;">
+                                        <div class="simplebar-content-wrapper"
+                                             style="height: 100%; overflow: hidden scroll;">
+                                            <div class="simplebar-content" style="padding: 16px;">
+                                                <nav class="nav nav-pills nav-gap-y-1 flex-column">
+                                                    <a href="javascript:void(0)" onclick="activator(this)"
+                                                       class="nav-link nav-link-faded has-icon active h2">همه دسته ها</a>
+                                                    {% for category in categories %}
+                                                        {% if not category.is_sub_category %}
+                                                            <li id="{{ forloop.counter }}" onclick="activator(this)"
+                                                                href="javascript:void(0)"
+                                                                class="nav-link nav-link-faded has-icon nav-link has-icon h3">{{ category.name }}</li>
+                                                        {% else %}
+                                                        
+                                                            <a id="{{ forloop.counter }}"  onclick="activator(this)"
+                                                               href="javascript:void(0)"
+                                                               class="nav-link nav-link-faded has-icon ">{{ category.name }}</a>
+                                                        {% endif %}
+                                                    {% endfor %}
+                                                </nav>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+                                <div class="simplebar-placeholder" style="width: 234px; height: 292px;"></div>
+                            </div>
+                            <div class="simplebar-track simplebar-horizontal" style="visibility: hidden;">
+                                <div class="simplebar-scrollbar" style="width: 0px; display: none;"></div>
+                            </div>
+                            <div class="simplebar-track simplebar-vertical" style="visibility: visible;">
+                                <div class="simplebar-scrollbar"
+                                     style="height: 151px; display: block; transform: translate3d(0px, 0px, 0px);"></div>
+                            </div>
+                        </div>
+                    </div>
+                    <!-- /Inner sidebar body -->
+                </div>
+                <!-- /Inner sidebar -->
+
+                <!-- Inner main -->
+                <div class="inner-main">
+                    <!-- Inner main header -->
+                    {#            <div class="inner-main-header">#}
+                    {#                <a class="nav-link nav-icon rounded-circle nav-link-faded mr-3 d-md-none" href="#" data-toggle="inner-sidebar"><i class="material-icons">arrow_forward_ios</i></a>#}
+                    {#            </div>#}
+                    <!-- /Inner main header -->
+
+                    <!-- Inner main body -->
+
+                    <!-- Forum List -->
+                    <div id="forum_list" class="inner-main-body p-2 p-sm-3 collapse forum-content show">
+                        {% for post in posts %}
+                            <div class="card mb-2 main" id="{{ post.category.name }}">
+                                <div class="card-body p-2 p-sm-3">
+                                    <div class="media forum-item">
+                                        <a href="#" data-toggle="collapse" data-target=".forum-content"><img
+                                                src="{% static 'img/avatar1.png' %}" class="mr-3 rounded-circle"
+                                                width="50" alt="User"/></a>
+                                        <div class="media-body">
+                                            <h6><a href="#" data-toggle="collapse"
+                                                   onclick="post_click('{{ post.title }}', '{{ post.author }}','{{ post.content }}', '{{ post.date_time }}', '{{ post.image.url }}')"
+                                                   data-target=".forum-content" class="text-body">{{ post.title }}</a>
+                                            </h6>
+                                            <a href="{{ post.image.url }}" target="_blank">
+                                                <img style="height: 300px; width: 300px" src="{{ post.image.url }}"
+                                                     alt="">
+                                            </a>
+                                            <p class="text-secondary">
+                                                {{ post.content|safe }}
+                                            </p>
+                                        </div>
+                                        <div class="text-muted small text-center align-self-center">
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                        {% endfor %}
+                    </div>
+                    <!-- /Forum List -->
+
+                    <!-- Forum Detail -->
+                    <div class="inner-main-body p-2 p-sm-3 collapse forum-content">
+                        <a href="#" class="btn btn-light btn-sm mb-3 has-icon" data-toggle="collapse"
+                           data-target=".forum-content"><i class="fa fa-arrow-left mr-2"></i>Back</a>
+                        <div id="forum_detail">
+                        </div>
+                    </div>
+                    <!-- /Forum Detail -->
+
+                    <!-- /Inner main body -->
+                </div>
+                <!-- /Inner main -->
+
+            </div>
+            <!-- New Thread Modal -->
+            <div class="modal fade" id="threadModal" tabindex="-1" role="dialog" aria-labelledby="threadModalLabel"
+                 aria-hidden="true">
+                <div class="modal-dialog modal-lg" role="document">
+                    <div class="modal-content">
+                        <form action="{% url 'website:home' %}" method="post">
+                            {% csrf_token %}
+                            <div class="modal-header d-flex align-items-center bg-primary text-white">
+                                <h6 class="modal-title mb-0" id="threadModalLabel">دسته جدید</h6>
+                                <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                                    <span aria-hidden="true">×</span>
+                                </button>
+                            </div>
+                            <div class="modal-body">
+                                <div class="form-group">
+                                    <label for="threadTitle">نام دسته</label>
+                                    {{ cat_form.name }}
+
+                                    <label for="threadTitle">دسته مادر</label>
+                                    {{ cat_form.parent }}
+                                </div>
+
+                            </div>
+                            <div class="modal-footer">
+                                <button type="button" class="btn btn-light" data-dismiss="modal">بی خیال</button>
+                                <button type="submit" class="btn btn-primary">ثبت</button>
+                            </div>
+                        </form>
+                    </div>
+                </div>
+            </div>
+            <div class="modal fade" id="postModel" tabindex="-1" role="dialog" aria-labelledby="threadModalLabel"
+                 aria-hidden="true">
+                <div class="modal-dialog modal-lg" role="document">
+                    <div class="modal-content">
+                        <form dir="rtl" action="{% url 'website:home' %}" method="post">
+                            {% csrf_token %}
+                            <div class="modal-header d-flex align-items-center bg-primary text-white">
+                                <h6 class="modal-title mb-0" id="threadModalLabel">پست جدید</h6>
+                                <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                                    <span aria-hidden="true">×</span>
+                                </button>
+                            </div>
+                            <div class="modal-body">
+                                <div class="form-group">
+                                    <label for="threadTitle"> 1عنوان</label>
+                                    <input id="title" name="title">
+                                    <br>
+                                    <label for="w3review">دسته بندی</label>
+                                    {{ post_form.category }}
+                                    <br>
+                                    <label for="w3review">محتوا</label>
+                                    <textarea id="content" name="content"></textarea>
+                                    <br>
+                                </div>
+                            </div>
+                            <div class="modal-footer">
+                                <button type="button" class="btn btn-light" data-dismiss="modal">بی خیال</button>
+                                <button type="submit" class="btn btn-primary">ثبت</button>
+                            </div>
+                        </form>
+                    </div>
+                </div>
+            </div>
+        {% else %}
+            <br>
+            <span>To see the content pls </span><a href="{% url 'accounts:login' %}">login</a><span> or </span>
+            <a style="align-content: center" href="{% url 'accounts:signup' %}">sign up</a>
+        {% endif %}
+    </div>
+</div>
+
+<script>
+    function activator(element) {
+        console.log("----------------activator starts------------------");
+        var activated_class = document.getElementsByClassName("nav-link nav-link-faded has-icon active");
+        console.log(activated_class);
+        if (activated_class.length > 0) {
+            for (var i = 0; i <= activated_class.length; i++) {
+                activated_class[i].className = activated_class[i].className.replace(" active", "");
+            }
+        }
+        element.className += " active";
+        console.log(element.className);
+        console.log("----------------activator ends------------------");
+
+        var new_activated_class = document.getElementsByClassName("nav-link nav-link-faded has-icon active");
+        const content = String(new_activated_class[0].innerText);
+        console.log(content);
+
+        $.ajaxSetup({
+            data: {csrfmiddlewaretoken: '{{ csrf_token }}'},
+        });
+        $.ajax({
+            method: 'post',
+            url: "{% url 'website:ajax_cat_post' %}",
+            data: {
+                category: element.innerText,
+            },
+            error: function () {
+                console.log("error");
+            },
+            success: function (data) {
+                console.log("success");
+                // if events is iterable
+                const cards = document.getElementById("forum_list");
+                cards.innerHTML = '<div class="card mb-2 main" id=' + element.innerText + '>';
+                data.forEach((event, index) => {
+                    console.log(event);
+                    $("div.card").append(`
+                   <div class="card-body p-2 p-sm-3">
+                        <div class="media forum-item">
+                            <a href="#" data-toggle="collapse" data-target=".forum-content"><img
+                                    src="` + event['image'] + `" class="mr-3 rounded-circle"
+                                    width="50" alt="User"/></a>
+                            <div class="media-body">
+                                <h6><a href="#" data-toggle="collapse"
+                                       onclick="post_click('` + event['title'] + `', '` + event['author'] + `','` + event['content'] + `', '` + event['date_time'] + `', '` + event['image'] + `', '` + event['category'][0] + `')"
+                                       data-target=".forum-content" class="text-body">` + event['title'] + `</a>
+                                </h6>
+                                <a href="` + event['image'] + `" target="_blank">
+                                    <img style="height: 300px; width: 300px" src="` + event['image'] + `"
+                                         alt="">
+                                </a>
+                                <p class="text-secondary">
+                                    ` + event['content'] + `
+                                </p>
+                            </div>
+                            <div class="text-muted small text-center align-self-center">
+                            </div>
+                        </div>
+                    </div>
+                   `);
+                })
+
+            },
+        })
+    }
+
+    function post_click(title, author, content, date_time, img_url, category) {
+        const cards = document.getElementById("forum_detail");
+        cards.innerHTML = '<div class="card mb-2 detail">';
+        $("div.detail").append(`
+            <div class="card-body">
+                <div class="media forum-item">
+                    <a href="javascript:void(0)" class="card-link">
+                        <img src="{% static 'img/avatar1.png' %}" class="rounded-circle" width="50" alt="User" />
+                        <small class="d-block text-center text-muted">Avatar</small>
+                    </a>
+                    <div class="media-body ml-3">
+                        <a href="javascript:void(0)" class="text-secondary">`+ author +`</a>
+                        <small class="text-muted ml-2">`+ date_time +`</small>
+                        <h5 class="mt-1">`+ title +`</h5>
+                        <div class="mt-3 font-size-sm">
+                            <a href="`+ img_url +`"  target="_blank">
+                                <img style="height: 300px; width: 300px" src="`+ img_url +`" alt="">
+                            </a>
+                            <p>`+
+                                content
+                            +`</p>
+                        </div>
+                    </div>
+                    <div class="text-muted small">
+                        <a data-toggle="modal" data-target="#replyPostModel" href="javascript:void(0)" class="text-muted" >Reply</a>
+                    </div>
+                    <div class="modal fade" id="replyPostModel" tabindex="-1" role="dialog" aria-labelledby="threadModalLabel" aria-hidden="true">
+                        <div class="modal-dialog modal-lg" role="document">
+                            <div class="modal-content">
+                                <form dir="rtl" action="{% url 'website:home' %}" method="post"  enctype="multipart/form-data">
+                                    {% csrf_token %}
+                                    <div class="modal-header d-flex align-items-center bg-primary text-white">
+                                        <h6 class="modal-title mb-0" id="threadModalLabel">پست جدید</h6>
+                                        <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                                            <span aria-hidden="true">×</span>
+                                        </button>
+                                    </div>
+                                    <div class="modal-body">
+                                        <div class="form-group">
+                                            <label for="threadTitle"> 3عنوان</label>
+                                            <input id="title" name="title" required>
+                                            <br>
+                                             <label for="w3review">محتوا</label>
+                                             <textarea id="content" name="content" required></textarea>
+                                            <br>
+                                            <input type="hidden" id="cat" name="cat" value="`+ category +`">
+                                            <input type="hidden" id="reply_to" name="reply_to" value="`+ title +`">
+
+                                            <label for="img">Select image:</label>
+                                            <input type="file" id="img" name="img" accept="image/*">
+                                        </div>
+
+                                    </div>
+                                    <div class="modal-footer">
+                                        <button type="button" class="btn btn-light" data-dismiss="modal">بی خیال</button>
+                                        <button type="submit" class="btn btn-primary">ثبت</button>
+                                    </div>
+                                </form>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            `);
+        $.ajaxSetup({
+            data: {csrfmiddlewaretoken: '{{ csrf_token }}'},
+        });
+        $.ajax({
+            method: 'post',
+            url: "{% url 'website:related_data' %}",
+            data: {
+                post_data: String(title),
+            },
+            error: function () {
+                console.log('error')
+            },
+            success: function (data) {
+                console.log("success");
+                // if events is iterable
+                data.forEach((event, index) => {
+                    console.log(event);
+                    $("div.detail").copy()
+                    $("div.detail").append(`
+                    <div class="card-body">
+                    <div class="media forum-item">
+                        <a href="javascript:void(0)" class="card-link">
+                            <img src="` + event['image'] + `" class="rounded-circle" width="50" alt="User" />
+                            <small class="d-block text-center text-muted">Avatar</small>
+                        </a>
+                        <div class="media-body ml-3">
+                            <a href="javascript:void(0)" class="text-secondary">` + event['author'] + `</a>
+                            <small class="text-muted ml-2">` + event['date_time'] + `</small>
+                            <h5 class="mt-1">` + event['title'] + `</h5>
+                            <div class="mt-3 font-size-sm">
+                                <a href="` + event['image'] + `"  target="_blank">
+                                    <img style="height: 300px; width: 300px" src="` + event['image'] + `" alt="">
+                                </a>
+                                <p>` + event['content'] + `</p>
+                            </div>
+                        </div>
+                        <div class="text-muted small">
+                            <a data-toggle="modal" data-target="#replyPostModel" href="javascript:void(0)" class="text-muted" >Reply</a>
+                        </div>
+                        <div class="modal fade" id="replyPostModel" tabindex="-1" role="dialog" aria-labelledby="threadModalLabel" aria-hidden="true">
+                            <div class="modal-dialog modal-lg" role="document">
+                                <div class="modal-content">
+                                    <form dir="rtl" action="{% url 'website:home' %}" method="post"  enctype="multipart/form-data">
+                                        {% csrf_token %}
+                                        <div class="modal-header d-flex align-items-center bg-primary text-white">
+                                            <h6 class="modal-title mb-0" id="threadModalLabel">پست جدید</h6>
+                                            <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                                                <span aria-hidden="true">×</span>
+                                            </button>
+                                        </div>
+                                        <div class="modal-body">
+                                            <div class="form-group">
+                                                <label for="threadTitle"> 2عنوان</label>
+                                                <input id="title" name="title" required>
+                                                <br>
+                                                 <label for="w3review">محتوا</label>
+                                                 <textarea id="content" name="content" required></textarea>
+                                                <br>
+                                                <input type="hidden" id="cat" name="cat" value="` + event['category'][0] + `">
+                                                <input type="hidden" id="reply_to" name="reply_to" value="` + title + `">
+
+                                                <label for="img">Select image:</label>
+                                                <input type="file" id="img" name="img" accept="image/*">
+                                            </div>
+
+                                        </div>
+                                        <div class="modal-footer">
+                                            <button type="button" class="btn btn-light" data-dismiss="modal">بی خیال</button>
+                                            <button type="submit" class="btn btn-primary">ثبت</button>
+                                        </div>
+                                    </form>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                   `);
+                })
+
+
+            }
+        });
+    }
+</script>
+
+</body>
+</html>
